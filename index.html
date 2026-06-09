@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jhonby Mangubat — Software QA Analyst</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0A1628;
+      --navy2:   #0F1F3D;
+      --steel:   #1E3A5F;
+      --cyan:    #00D4FF;
+      --cyan2:   #00A8CC;
+      --white:   #F0F4F8;
+      --slate:   #8BA3BC;
+      --slate2:  #5C7A96;
+      --pass:    #00E5A0;
+      --fail:    #FF4D6A;
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Inter', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 60px;
+      background: rgba(10,22,40,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,212,255,0.12);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800; font-size: 1.1rem;
+      color: var(--cyan); letter-spacing: 0.04em;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem; font-weight: 500;
+      color: var(--slate); text-decoration: none;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 60px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center; max-width: 1200px; margin: 0 auto; width: 100%;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.78rem; color: var(--cyan);
+      letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 24px; height: 1px; background: var(--cyan);
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.05;
+      color: var(--white); margin-bottom: 20px;
+    }
+    h1 span { color: var(--cyan); }
+    .hero-desc {
+      font-size: 1rem; color: var(--slate); max-width: 440px;
+      line-height: 1.75; margin-bottom: 36px;
+    }
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 13px 28px;
+      background: var(--cyan); color: var(--navy);
+      font-family: var(--font-display); font-weight: 700; font-size: 0.88rem;
+      border: none; cursor: pointer; text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, transform 0.15s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    }
+    .btn-primary:hover { background: var(--pass); transform: translateY(-2px); }
+    .btn-outline {
+      padding: 13px 28px;
+      background: transparent; color: var(--cyan);
+      font-family: var(--font-display); font-weight: 700; font-size: 0.88rem;
+      border: 1px solid var(--cyan); text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background 0.2s, transform 0.15s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    }
+    .btn-outline:hover { background: rgba(0,212,255,0.1); transform: translateY(-2px); }
+
+    /* Terminal card */
+    .terminal {
+      background: var(--navy2);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.05);
+    }
+    .terminal-bar {
+      background: var(--steel);
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: var(--fail); }
+    .dot-y { background: #FFB800; }
+    .dot-g { background: var(--pass); }
+    .terminal-title {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--slate); margin-left: 8px;
+    }
+    .terminal-body { padding: 24px 28px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.9; }
+    .t-prompt { color: var(--pass); }
+    .t-cmd { color: var(--white); }
+    .t-out { color: var(--slate); }
+    .t-key { color: var(--cyan); }
+    .t-val { color: #FFB800; }
+    .t-pass { color: var(--pass); font-weight: 600; }
+    .t-fail { color: var(--fail); }
+    .cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: var(--cyan); vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Scanlines overlay */
+    #hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+      pointer-events: none;
+    }
+    /* Glow blob */
+    .glow {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+      top: -100px; right: -100px; pointer-events: none;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 100px 60px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--cyan); letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(0,212,255,0.15); }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; margin-bottom: 48px; color: var(--white);
+    }
+
+    /* ── STATS ── */
+    #stats { padding: 40px 60px; background: var(--navy2); border-top: 1px solid rgba(0,212,255,0.1); border-bottom: 1px solid rgba(0,212,255,0.1); }
+    .stats-row { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px; }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; color: var(--cyan);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--slate); margin-top: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── EXPERIENCE ── */
+    .exp-item {
+      display: grid; grid-template-columns: 220px 1fr;
+      gap: 40px; margin-bottom: 60px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .exp-meta { padding-top: 4px; }
+    .exp-date {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      color: var(--cyan); margin-bottom: 6px;
+    }
+    .exp-company {
+      font-size: 0.82rem; color: var(--slate); line-height: 1.4;
+    }
+    .exp-title {
+      font-family: var(--font-display); font-size: 1.25rem;
+      font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .exp-bullets { list-style: none; }
+    .exp-bullets li {
+      font-size: 0.9rem; color: var(--slate);
+      padding: 6px 0 6px 20px;
+      position: relative; line-height: 1.65;
+    }
+    .exp-bullets li::before {
+      content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.75rem;
+    }
+    .exp-tag {
+      display: inline-block; margin-top: 14px; margin-right: 6px;
+      padding: 3px 10px;
+      font-family: var(--font-mono); font-size: 0.68rem;
+      color: var(--cyan2); border: 1px solid rgba(0,212,255,0.25);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--navy2); }
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .skill-card {
+      background: var(--navy);
+      border: 1px solid rgba(0,212,255,0.1);
+      padding: 28px; position: relative; overflow: hidden;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .skill-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-3px); }
+    .skill-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 100%; background: var(--cyan);
+    }
+    .skill-cat {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .skill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-chip {
+      padding: 5px 12px;
+      font-size: 0.78rem; color: var(--slate);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .skill-chip:hover { color: var(--white); border-color: rgba(0,212,255,0.3); }
+
+    /* ── CERTIFICATIONS ── */
+    .cert-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+    .cert-card {
+      display: flex; align-items: flex-start; gap: 18px;
+      padding: 26px;
+      background: var(--navy2); border: 1px solid rgba(0,212,255,0.1);
+      transition: border-color 0.25s;
+    }
+    .cert-card:hover { border-color: rgba(0,212,255,0.4); }
+    .cert-icon {
+      flex-shrink: 0; width: 44px; height: 44px;
+      background: rgba(0,212,255,0.1); display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .cert-name { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .cert-issuer { font-size: 0.78rem; color: var(--slate); }
+
+    /* ── EDUCATION ── */
+    .edu-list { display: flex; flex-direction: column; gap: 0; }
+    .edu-item {
+      display: grid; grid-template-columns: 180px 1fr;
+      gap: 40px; padding: 32px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .edu-item:last-child { border-bottom: none; }
+    .edu-year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--cyan); padding-top: 4px; }
+    .edu-school { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .edu-degree { font-size: 0.85rem; color: var(--slate); }
+    .edu-location { font-size: 0.78rem; color: var(--slate2); margin-top: 2px; }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--navy2); }
+    .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-tagline { font-size: 1rem; color: var(--slate); line-height: 1.8; margin-bottom: 36px; }
+    .contact-info { display: flex; flex-direction: column; gap: 16px; }
+    .contact-row {
+      display: flex; align-items: center; gap: 14px;
+      font-size: 0.9rem;
+    }
+    .contact-ico {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .contact-text { color: var(--slate); }
+    .contact-text a { color: var(--cyan); text-decoration: none; }
+    .contact-text a:hover { text-decoration: underline; }
+    .ref-cards { display: flex; flex-direction: column; gap: 16px; }
+    .ref-card {
+      padding: 24px; background: var(--navy);
+      border: 1px solid rgba(0,212,255,0.1);
+    }
+    .ref-name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .ref-role { font-size: 0.78rem; color: var(--cyan); margin-bottom: 10px; }
+    .ref-contacts { font-size: 0.78rem; color: var(--slate); line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 60px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--slate2);
+    }
+    footer span { color: var(--cyan); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section, #hero { padding: 80px 24px; }
+      #stats { padding: 32px 24px; }
+      .hero-grid, .contact-wrap { grid-template-columns: 1fr; }
+      .exp-item, .edu-item { grid-template-columns: 1fr; gap: 8px; }
+      footer { padding: 24px; }
+    }
+
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">JM.QA</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="glow"></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">Software QA Analyst</div>
+      <h1>Jhonby<br><span>Mangubat</span></h1>
+      <p class="hero-desc">
+        Detail-oriented QA specialist with hands-on experience shipping bug-free web and mobile applications. I turn test cases into confidence.
+      </p>
+      <div class="hero-cta">
+        <a href="#experience" class="btn-primary">View Experience</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">qa-profile.sh</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">cat profile.json</span></div>
+        <div class="t-out">{</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"name"</span>: <span class="t-val">"Jhonby Mangubat"</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"role"</span>: <span class="t-val">"Software QA Analyst"</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"test_cases"</span>: <span class="t-val">3000+</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"coverage"</span>: <span class="t-val">"95%+"</span>,</div>
+        <div>&nbsp;&nbsp;<span class="t-key">"bugs_reduced"</span>: <span class="t-val">"~66%"</span></div>
+        <div class="t-out">}</div>
+        <br>
+        <div><span class="t-prompt">$ </span><span class="t-cmd">run tests --all</span></div>
+        <div><span class="t-pass">✔</span> Smoke tests passed</div>
+        <div><span class="t-pass">✔</span> Regression suite passed</div>
+        <div><span class="t-pass">✔</span> Functional tests passed</div>
+        <div><span class="t-pass">✔</span> All systems go</div>
+        <br>
+        <div><span class="t-prompt">$ </span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-row">
+    <div class="stat reveal">
+      <div class="stat-num">3,000+</div>
+      <div class="stat-label">Test Cases Managed</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">95%+</div>
+      <div class="stat-label">Requirement Coverage</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">~66%</div>
+      <div class="stat-label">Reduction in Production Issues</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num">1+</div>
+      <div class="stat-label">Year QA Experience</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-label">Work Experience</div>
+    <h2>Where I've Made an Impact</h2>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-date">Mar 2025 — Present</div>
+        <div class="exp-company">Inventi Asia Intellectual Holdings<br>Mandaluyong City, Metro Manila</div>
+      </div>
+      <div>
+        <div class="exp-title">Software Quality Analyst</div>
+        <ul class="exp-bullets">
+          <li>Own end-to-end quality assurance for multiple software projects, defining and executing tailored QA strategies aligned with business and technical requirements.</li>
+          <li>Manage a repository of 3,000+ test cases achieving over 95% requirement coverage, ensuring comprehensive validation of critical features before launches.</li>
+          <li>Collaborate with developers, QA leads, and product managers to validate acceptance criteria and clarify user stories within Agile sprint goals.</li>
+          <li>Execute functional, smoke, and regression testing; document defects in Zoho contributing to approximately 66% reduction in production issues.</li>
+          <li>Perform root cause analysis on defects and collaborate with developers to validate fixes and prevent recurrences.</li>
+        </ul>
+        <div>
+          <span class="exp-tag">Agile/Scrum</span>
+          <span class="exp-tag">Zoho</span>
+          <span class="exp-tag">Regression Testing</span>
+          <span class="exp-tag">Root Cause Analysis</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <div class="exp-date">Apr — May 2024</div>
+        <div class="exp-company">DataSense Analytics<br>Mandaluyong City, Metro Manila</div>
+      </div>
+      <div>
+        <div class="exp-title">Data Analyst Intern</div>
+        <ul class="exp-bullets">
+          <li>Assisted in managing and analyzing datasets using Excel and Google Sheets formulas.</li>
+          <li>Utilized SQL queries (SELECT, WHERE, JOIN) to extract and filter data for team reporting.</li>
+        </ul>
+        <div>
+          <span class="exp-tag">SQL</span>
+          <span class="exp-tag">Excel</span>
+          <span class="exp-tag">Google Sheets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-label">Skills & Tools</div>
+    <h2>My QA Toolkit</h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-cat">Testing Types</div>
+        <div class="skill-list">
+          <span class="skill-chip">Manual Testing</span>
+          <span class="skill-chip">Functional Testing</span>
+          <span class="skill-chip">Smoke Testing</span>
+          <span class="skill-chip">Regression Testing</span>
+          <span class="skill-chip">Exploratory Testing</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-cat">QA Practices</div>
+        <div class="skill-list">
+          <span class="skill-chip">Test Case Design</span>
+          <span class="skill-chip">Test Planning</span>
+          <span class="skill-chip">Root Cause Analysis</span>
+          <span class="skill-chip">Defect Reporting</span>
+          <span class="skill-chip">Acceptance Criteria</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-cat">Tools & Platforms</div>
+        <div class="skill-list">
+          <span class="skill-chip">JIRA</span>
+          <span class="skill-chip">TestRail</span>
+          <span class="skill-chip">Zoho</span>
+          <span class="skill-chip">Browser DevTools</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-cat">Methodologies</div>
+        <div class="skill-list">
+          <span class="skill-chip">Agile</span>
+          <span class="skill-chip">Scrum</span>
+          <span class="skill-chip">Sprint Planning</span>
+          <span class="skill-chip">User Story Validation</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-cat">Data & SQL</div>
+        <div class="skill-list">
+          <span class="skill-chip">SQL Queries</span>
+          <span class="skill-chip">Data Filtering</span>
+          <span class="skill-chip">Aggregation</span>
+          <span class="skill-chip">Joins</span>
+          <span class="skill-chip">Excel</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-cat">Soft Skills</div>
+        <div class="skill-list">
+          <span class="skill-chip">Attention to Detail</span>
+          <span class="skill-chip">Communication</span>
+          <span class="skill-chip">Collaboration</span>
+          <span class="skill-chip">Problem Solving</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-inner">
+    <div class="section-label">Certifications</div>
+    <h2>Credentials</h2>
+    <div class="cert-list">
+      <div class="cert-card reveal">
+        <div class="cert-icon">🧪</div>
+        <div>
+          <div class="cert-name">Software QA Manual Testing Workshop</div>
+          <div class="cert-issuer">Practical experience in QA fundamentals, Agile/Scrum practices, and test planning.</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">🗄️</div>
+        <div>
+          <div class="cert-name">Certified SQL Associate</div>
+          <div class="cert-issuer">Issued by DataCamp — Proficiency in SQL queries, data filtering, aggregation, joins, and database analysis.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="background: var(--navy2);">
+  <div class="section-inner">
+    <div class="section-label">Education</div>
+    <h2>Academic Background</h2>
+    <div class="edu-list">
+      <div class="edu-item reveal">
+        <div class="edu-year">2024 — 2025</div>
+        <div>
+          <div class="edu-school">University of Batangas</div>
+          <div class="edu-degree">Bachelor of Science in Information Technology</div>
+          <div class="edu-location">Lipa City, Batangas</div>
+        </div>
+      </div>
+      <div class="edu-item reveal">
+        <div class="edu-year">2020 — 2023</div>
+        <div>
+          <div class="edu-school">Polytechnic University of the Philippines</div>
+          <div class="edu-degree">Science, Technology, Engineering, and Mathematics</div>
+          <div class="edu-location">Santo Tomas, Batangas</div>
+        </div>
+      </div>
+      <div class="edu-item reveal">
+        <div class="edu-year">2018 — 2020</div>
+        <div>
+          <div class="edu-school">St. Thomas Academy</div>
+          <div class="edu-degree">Science, Technology, Engineering, and Mathematics</div>
+          <div class="edu-location">Santo Tomas, Batangas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-label">Contact</div>
+    <h2>Let's Work Together</h2>
+    <div class="contact-wrap">
+      <div>
+        <p class="contact-tagline">Open to new opportunities in quality assurance, automation, or any role where attention to detail and a passion for quality make a difference.</p>
+        <div class="contact-info">
+          <div class="contact-row reveal">
+            <div class="contact-ico">📧</div>
+            <div class="contact-text"><a href="mailto:mangubatjhonbym@gmail.com">mangubatjhonbym@gmail.com</a></div>
+          </div>
+          <div class="contact-row reveal">
+            <div class="contact-ico">📱</div>
+            <div class="contact-text">09625457150</div>
+          </div>
+          <div class="contact-row reveal">
+            <div class="contact-ico">📍</div>
+            <div class="contact-text">San Antonio, Santo Tomas City, Batangas</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom: 20px;">Character References</div>
+        <div class="ref-cards">
+          <div class="ref-card reveal">
+            <div class="ref-name">John Darelle L. Rayco</div>
+            <div class="ref-role">Software Quality Analyst, Inventi Asia</div>
+            <div class="ref-contacts">
+              📧 johndarelle.rayco@inventi.ph<br>
+              📱 (+63) 9195900593
+            </div>
+          </div>
+          <div class="ref-card reveal">
+            <div class="ref-name">Carlo Medalla</div>
+            <div class="ref-role">Vulnerability Management Lead, Concentrix</div>
+            <div class="ref-contacts">
+              📧 carlocarpiomedalla@gmail.com<br>
+              📱 09562680615
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Jhonby Mangubat</span> · Software QA Analyst · Built with precision, just like a good test suite.
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
